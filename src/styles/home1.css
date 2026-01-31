@@ -1,0 +1,145 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+
+:root {
+  --bg-dark: #0c0f25;
+  --card-bg: rgba(10, 15, 40, 0.95);
+  --input-bg: #121837;
+  --primary-gradient: linear-gradient(135deg, #00ffa3, #6a5cff);
+  --secondary-gradient: linear-gradient(135deg, #ff4ad9, #3d7eff);
+  --text-main: #f0f0f0;
+  --text-muted: #b0b0b0;
+  --border-color: rgba(255,255,255,0.1);
+  --transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  --shadow-card: 0 20px 40px rgba(0, 255, 163, 0.25);
+  --shadow-hover: 0 30px 60px rgba(0, 255, 163, 0.35);
+  --navbar-width: 80px;
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  background: linear-gradient(135deg, #0c0f25, #1f1f3f, #1f3f7f, #0c0f25);
+  background-size: 400% 400%;
+  animation: gradientBG 20s ease infinite;
+  color: var(--text-main);
+  overflow: hidden; /* Prevent scrolls to keep it full screen */
+}
+
+@keyframes gradientBG {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* ========================================= */
+/* Navbars - STRICTLY UNCHANGED              */
+/* ========================================= */
+.navbar-horizontal {
+  position: fixed;
+  top: 0;
+  left: var(--navbar-width);
+  right: 0;
+  height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 30px;
+  background: rgba(10, 15, 40, 0.5);
+  backdrop-filter: blur(10px);
+  z-index: 1000;
+}
+
+.navbar-vertical {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: var(--navbar-width);
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 20px;
+  background: #0c0f25;
+  z-index: 1000;
+}
+
+/* ========================================= */
+/* THE FULL-SCREEN MIDDLE PART FIX           */
+/* ========================================= */
+
+.container {
+  margin-left: var(--navbar-width); /* Starts right after side navbar */
+  padding-top: 70px; /* Starts right below top navbar */
+  height: calc(100vh - 70px); /* Fills all vertical space to the bottom */
+  display: flex;
+  flex-direction: column;
+  padding-left: 0 !important;   /* REMOVE ALL GAPS */
+  padding-right: 0 !important;
+  padding-bottom: 0 !important;
+  width: calc(100vw - var(--navbar-width)); /* Stretch to the right edge */
+  max-width: none !important; /* Force stretch */
+}
+
+.video-main-wrapper {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.video-split {
+  display: flex;
+  flex: 1; /* This makes the video area grow to fill the screen */
+  width: 100%;
+  gap: 0; /* No space between screens */
+  background: #000;
+}
+
+.full-screen-video {
+  width: 50% !important; /* Exactly half of the screen width */
+  height: 100% !important; /* Full height of the middle section */
+  object-fit: cover; /* This makes the video fill the 50% area without black bars */
+  border-radius: 0 !important; /* Remove the "box" look */
+  border: 1px solid rgba(255,255,255,0.05) !important; /* Very subtle line to separate */
+}
+
+/* Floating Controls - As requested in your blue drawing */
+.controls {
+  position: absolute;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 20px;
+  z-index: 2000;
+  background: rgba(0, 0, 0, 0.6);
+  padding: 15px 30px;
+  border-radius: 50px;
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--border-color);
+}
+
+/* Standard button styles */
+button {
+  padding: 10px 18px;
+  border-radius: 14px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  transition: var(--transition);
+  background: var(--primary-gradient);
+  color: #0c0f25;
+}
+
+/* Force removal of old card styles */
+.friend-card {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+}

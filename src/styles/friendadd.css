@@ -1,0 +1,52 @@
+.friend-add-container {
+  width: 100%;
+  max-width: 420px;
+  margin: 40px auto;
+  padding: 24px;
+  background: #181818;
+  border-radius: 12px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.6);
+  color: #fff;
+}
+
+.friend-add-container h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  font-weight: 600;
+}
+
+.friend-search-box {
+  display: flex;
+  gap: 10px;
+}
+
+.friend-search-box input {
+  flex: 1;
+  padding: 12px;
+  background: #242424;
+  border: none;
+  border-radius: 8px;
+  color: white;
+  outline: none;
+}
+
+.friend-search-box button {
+  padding: 12px 16px;
+  background: #2ecc71;
+  border: none;
+  border-radius: 8px;
+  color: #000;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.friend-search-box button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.friend-message {
+  margin-top: 16px;
+  text-align: center;
+  font-size: 14px;
+}
