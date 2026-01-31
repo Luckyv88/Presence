@@ -20,10 +20,10 @@ connectDB();
 const app = express();
 
 // Middlewares
-app.use(cors({
-  origin: 'http://localhost:3000', // your frontend URL
-  credentials: true,               // allow cookies
-}));
+const allowedOrigins = [
+  "http://localhost:3000",                       // local dev
+  "https://presences-5a8n.onrender.com"         // deployed frontend
+];
 app.use(express.json());
 app.use(cookieParser());
 
