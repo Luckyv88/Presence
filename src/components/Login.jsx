@@ -47,7 +47,7 @@ const Login = ({ setUser }) => {
       </form>
 
       <p>
-        Don't have an account? <a href="/signup">Register</a>
+        Don't have an account? <a href="/auth/signup">Register</a>
       </p>
     </div>
   );
