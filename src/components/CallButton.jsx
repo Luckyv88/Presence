@@ -57,12 +57,12 @@ const CallButton = ({ friendId, userId }) => {
       signalingDoneRef.current = true;
     });
 
-    // ☎️ Call ended by other user
-  socket.on("callEnded", () => {
-  if (!callActiveRef.current) return;
-  cleanupCall();
-  navigate("/home", { replace: true });
-});
+    // ☎️ Call ended by peer
+    socket.on("callEnded", () => {
+      // ❌ Removed the guard: always cleanup
+      cleanupCall();
+      navigate("/home", { replace: true });
+    });
 
     return () => {
       socket.off("incomingCall");
@@ -144,47 +144,37 @@ const CallButton = ({ friendId, userId }) => {
   };
 
   // ❌ End call
-const endCall = () => {
-  // Remove the check to allow clicking even after call ended
-  socket.emit("endCall", {
-    to: callerSignal?.from || friendId,
-    from: userId,
-  });
+  const endCall = () => {
+    socket.emit("endCall", {
+      to: callerSignal?.from || friendId,
+      from: userId,
+    });
 
-  cleanupCall();
-  navigate("/home", { replace: true });
-};
- // ... existing code ...
+    cleanupCall();
+    navigate("/home", { replace: true });
+  };
 
-// 🧹 Cleanup (SAFE & FINAL)
-const cleanupCall = () => {
-  callActiveRef.current = false;
-  signalingDoneRef.current = false;
+  // 🧹 Cleanup (SAFE & FINAL)
+  const cleanupCall = () => {
+    callActiveRef.current = false;
+    signalingDoneRef.current = false;
 
-  if (connectionRef.current) {
-    connectionRef.current.destroy();
-    connectionRef.current = null;
-  }
+    if (connectionRef.current) {
+      connectionRef.current.destroy();
+      connectionRef.current = null;
+    }
 
-  if (friendVideo.current) {
-    friendVideo.current.srcObject = null;
-  }
+    if (friendVideo.current) friendVideo.current.srcObject = null;
+    if (myVideo.current) myVideo.current.srcObject = null;
 
-  // Stop the local media stream to turn off camera and mic
-  if (stream) {
-    stream.getTracks().forEach(track => track.stop());
-    setStream(null);
-  }
+    if (stream) {
+      stream.getTracks().forEach((track) => track.stop());
+      setStream(null);
+    }
 
-  if (myVideo.current) {
-    myVideo.current.srcObject = null;
-  }
-
-  setReceivingCall(false);
-  setCallerSignal(null);
-};
-
-// ... existing code ...
+    setReceivingCall(false);
+    setCallerSignal(null);
+  };
 
   // ⛔ JSX — 100% UNCHANGED
   return (
