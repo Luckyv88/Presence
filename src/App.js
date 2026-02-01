@@ -27,7 +27,7 @@ const App = () => {
           element={!user ? <Login setUser={setUser} /> : <Navigate to="/home" />}
         />
         <Route
-          path="/register"
+          path="/signup"
           element={!user ? <Register /> : <Navigate to="/home" />}
         />
 
