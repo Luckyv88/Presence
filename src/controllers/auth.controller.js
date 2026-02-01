@@ -113,37 +113,24 @@ export const login = async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    // 1️⃣ Validate required fields
-    if (!email || !password) {
-      return res.status(400).json({ message: "All fields are required" });
-    }
+    if (!email || !password) return res.status(400).json({ message: "All fields required" });
 
-    // 2️⃣ Find user by email
     const user = await User.findOne({ email });
-    if (!user) {
-      return res.status(401).json({ message: "Invalid email or password" });
-    }
+    if (!user) return res.status(401).json({ message: "Invalid email or password" });
 
-    // 3️⃣ Compare password using bcrypt
     const isPasswordCorrect = await bcrypt.compare(password, user.password);
-    if (!isPasswordCorrect) {
-      return res.status(401).json({ message: "Invalid email or password" });
-    }
+    if (!isPasswordCorrect) return res.status(401).json({ message: "Invalid email or password" });
 
-    // 4️⃣ Generate JWT
-    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET_KEY, {
-      expiresIn: "7d",
-    });
+    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET_KEY, { expiresIn: "7d" });
 
-    // 5️⃣ Set secure cookie
+    // ✅ consistent cookie
     res.cookie("jwt", token, {
-      maxAge: 7 * 24 * 60 * 60 * 1000,
       httpOnly: true,
-      sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
-      secure: process.env.NODE_ENV === "production",
+      sameSite: "none",  // allow cross-origin
+      secure: true,      // must be HTTPS
+      maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
-    // 6️⃣ Response
     res.status(200).json({
       success: true,
       user: {
@@ -156,10 +143,11 @@ export const login = async (req, res) => {
       },
     });
   } catch (error) {
-    console.log("Error in login controller", error.message);
+    console.log("Login error:", error.message);
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
+
 
 export function logout(req, res) {
   res.clearCookie("jwt");

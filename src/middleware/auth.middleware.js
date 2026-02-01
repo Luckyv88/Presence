@@ -6,6 +6,7 @@ export const protect = async (req, res, next) => {
     const token = req.cookies.jwt;
 
     if (!token) {
+      console.log("not found");
       return res.status(401).json({ message: "Not authorized" });
     }
 
