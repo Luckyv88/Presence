@@ -1,24 +1,23 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { api } from "../utils/api";
 import "../styles/login.css";
 
 const Login = ({ setUser }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState(""); // for inline error message
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(""); // reset error
+    setError("");
     try {
-      const res = await api.post("/auth/login", { email, password });
+      const res = await api.post("/api/auth/login", { email, password });
       setUser(res.data.user);
       navigate("/home");
     } catch (err) {
       setError(err.response?.data?.message || "Login failed. Please try again.");
-      console.error(err);
     }
   };
 
@@ -47,7 +46,7 @@ const Login = ({ setUser }) => {
       </form>
 
       <p>
-        Don't have an account? <a href="/auth/signup">Register</a>
+        Don't have an account? <Link to="/signup">Register</Link>
       </p>
     </div>
   );
