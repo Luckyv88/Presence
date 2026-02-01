@@ -14,7 +14,7 @@ const Login = ({ setUser }) => {
     setError("");
     try {
       // ✅ FIXED PATH
-      const res = await api.post("/api/auth/login", { email, password });
+      const res = await api.post("/auth/login", { email, password });
       setUser(res.data.user);
       navigate("/home");
     } catch (err) {
