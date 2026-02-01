@@ -1,29 +1,17 @@
-/* Root variables */
-:root {
-  --bg-dark: #0a0f2e;
-  --card-bg: rgba(15, 20, 45, 0.95);
-  --input-bg: rgba(20, 30, 60, 0.85);
-  --primary-gradient: linear-gradient(135deg, #00ffa3, #6a5cff);
-  --text-main: #f0f0f0;
-  --text-muted: #b0b0b0;
-  --border-color: rgba(255, 255, 255, 0.15);
-  --shadow-card: 0 20px 60px rgba(0, 255, 163, 0.25);
-  --shadow-hover: 0 35px 90px rgba(0, 255, 163, 0.35);
-  --transition: all 0.35s ease-in-out;
-}
-
-/* 1. FIXED WRAPPER: Changed to .register-wrapper and added overflow */
+/* PAGE WRAPPER */
 .register-wrapper {
-  display: flex;
-  justify-content: center;
-  align-items: flex-start; /* Better for long forms */
   min-height: 100vh;
-  padding: 40px 20px; /* Gives space at top and bottom */
+  width: 100%;
   background: linear-gradient(135deg, #0a0f2e, #1f2a5f, #102061, #0a0f2e);
   background-size: 400% 400%;
   animation: gradientBG 25s ease infinite;
+
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 40px 20px;
+  overflow-y: auto;
   font-family: 'Inter', sans-serif;
-  overflow-y: auto; /* Allows the page to scroll */
 }
 
 @keyframes gradientBG {
@@ -32,37 +20,32 @@
   100% { background-position: 0% 50%; }
 }
 
-/* 2. FIXED CARD: Changed to .register-card */
+/* REGISTER CARD */
 .register-card {
   width: 100%;
-  max-width: 600px; /* Increased slightly for side-by-side rows */
-  background: var(--card-bg);
+  max-width: 600px;
+  background: rgba(15, 20, 45, 0.95);
   border-radius: 32px;
-  border: 1px solid var(--border-color);
+  border: 1px solid rgba(255, 255, 255, 0.15);
   padding: 40px;
   backdrop-filter: blur(14px);
-  box-shadow: var(--shadow-card);
+  box-shadow: 0 20px 60px rgba(0, 255, 163, 0.25);
   display: flex;
   flex-direction: column;
-  transition: var(--transition);
 }
 
-.register-card:hover {
-  box-shadow: var(--shadow-hover);
-}
-
-/* Heading */
-.register-card .title {
+/* TITLE */
+.title {
   font-size: 32px;
   font-weight: 700;
   margin-bottom: 30px;
-  background: var(--primary-gradient);
+  background: linear-gradient(135deg, #00ffa3, #6a5cff);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   text-align: center;
 }
 
-/* Avatar Section */
+/* AVATAR */
 .avatar-section {
   display: flex;
   flex-direction: column;
@@ -77,7 +60,7 @@
   border-radius: 50%;
   border: 3px solid #00ffa3;
   overflow: hidden;
-  background: var(--input-bg);
+  background: rgba(20, 30, 60, 0.85);
 }
 
 .avatar-circle img {
@@ -86,7 +69,7 @@
   object-fit: cover;
 }
 
-/* Form Layout for Rows */
+/* FORM */
 .onboarding-form {
   display: flex;
   flex-direction: column;
@@ -99,28 +82,32 @@
 }
 
 .input-group {
+  flex: 1;
   display: flex;
   flex-direction: column;
   gap: 8px;
-  flex: 1;
 }
 
 .input-group label {
-  color: var(--text-muted);
   font-size: 14px;
-  margin-left: 5px;
+  color: #b0b0b0;
 }
 
-/* Inputs & Textarea */
-.register-card input, 
+.register-card input,
 .register-card textarea {
   padding: 14px 18px;
   border-radius: 15px;
-  border: 2px solid var(--border-color);
-  background: var(--input-bg);
-  color: var(--text-main);
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  background: rgba(20, 30, 60, 0.85);
+  color: #f0f0f0;
   font-size: 15px;
-  transition: var(--transition);
+}
+
+.register-card input:focus,
+.register-card textarea:focus {
+  outline: none;
+  border-color: #00ffa3;
+  box-shadow: 0 0 15px rgba(0, 255, 163, 0.2);
 }
 
 .register-card textarea {
@@ -128,23 +115,16 @@
   resize: vertical;
 }
 
-.register-card input:focus {
-  outline: none;
-  border-color: #00ffa3;
-  box-shadow: 0 0 15px rgba(0, 255, 163, 0.2);
-}
-
-/* Buttons */
+/* BUTTONS */
 .btn-primary {
   margin-top: 10px;
   padding: 16px;
   border-radius: 15px;
   border: none;
   font-weight: 700;
-  background: var(--primary-gradient);
+  background: linear-gradient(135deg, #00ffa3, #6a5cff);
   color: #0a0f2e;
   cursor: pointer;
-  transition: var(--transition);
 }
 
 .btn-secondary {
@@ -153,16 +133,10 @@
   border: 1px solid #00ffa3;
   background: transparent;
   color: #00ffa3;
-  font-size: 13px;
   cursor: pointer;
 }
 
-.btn-primary:hover {
-  transform: translateY(-2px);
-  filter: brightness(1.1);
-}
-
-/* Responsive Fix */
+/* MOBILE */
 @media (max-width: 600px) {
   .row {
     flex-direction: column;

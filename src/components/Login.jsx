@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { api } from "../utils/api";
 import "../styles/login.css";
 
@@ -13,6 +13,7 @@ const Login = ({ setUser }) => {
     e.preventDefault();
     setError("");
     try {
+      // ✅ FIXED PATH
       const res = await api.post("/api/auth/login", { email, password });
       setUser(res.data.user);
       navigate("/home");
@@ -21,8 +22,9 @@ const Login = ({ setUser }) => {
     }
   };
 
-  return (
-    <div className="container">
+return (
+  <div className="login-wrapper">
+    <div className="login-card">
       <h2>Login</h2>
 
       {error && <div className="toast-error">{error}</div>}
@@ -46,10 +48,12 @@ const Login = ({ setUser }) => {
       </form>
 
       <p>
-        Don't have an account? <Link to="/signup">Register</Link>
+        Don't have an account? <a href="/signup">Register</a>
       </p>
     </div>
-  );
+  </div>
+);
+
 };
 
 export default Login;
