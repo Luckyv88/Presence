@@ -82,12 +82,13 @@ export const signup = async (req, res) => {
     );
 
     // 8️⃣ Secure cookie
-    res.cookie("jwt", token, {
-      httpOnly: true,
-      sameSite: "strict",
-      secure: process.env.NODE_ENV === "",
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-    });
+   res.cookie("jwt", token, {
+  httpOnly: true,
+  sameSite: "none",        // ✅ allow cross-origin
+  secure: true,            // ✅ required for HTTPS
+  maxAge: 7 * 24 * 60 * 60 * 1000,
+});
+
 
     // 9️⃣ Response (never return password)
     res.status(201).json({
