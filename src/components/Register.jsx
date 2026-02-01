@@ -43,10 +43,17 @@ const Register = () => {
 
   return (
     <div className="register-wrapper">
-      {toast && <div className="toast-notification">{toast}</div>}
+      {/* Toast Notification Container */}
+      {toast && (
+        <div className={`toast-notification ${toast.includes('✅') ? 'success' : 'error'}`}>
+          {toast}
+        </div>
+      )}
+
       <div className="register-card">
         <h1 className="title">Create Your Account</h1>
 
+        {/* Avatar Section */}
         <div className="avatar-section">
           <div className="avatar-circle">
             <img src={form.profilepic} alt="User Avatar" />
@@ -60,7 +67,10 @@ const Register = () => {
           </button>
         </div>
 
+        {/* Form Section */}
         <form onSubmit={handleSubmit} className="onboarding-form">
+          
+          {/* Row 1: Name and Username */}
           <div className="row">
             <div className="input-group">
               <label>Full Name</label>
@@ -82,6 +92,7 @@ const Register = () => {
             </div>
           </div>
 
+          {/* Row 2: Email and Phone */}
           <div className="row">
             <div className="input-group">
               <label>Email</label>
@@ -104,6 +115,7 @@ const Register = () => {
             </div>
           </div>
 
+          {/* Password */}
           <div className="input-group">
             <label>Password</label>
             <input
@@ -115,6 +127,7 @@ const Register = () => {
             />
           </div>
 
+          {/* Bio (Textarea) */}
           <div className="input-group">
             <label>Bio</label>
             <textarea
@@ -124,6 +137,7 @@ const Register = () => {
             />
           </div>
 
+          {/* Location */}
           <div className="input-group">
             <label>Location</label>
             <input
@@ -133,6 +147,7 @@ const Register = () => {
             />
           </div>
 
+          {/* Submit Button */}
           <button type="submit" className="btn-primary">
             Complete Registration
           </button>
