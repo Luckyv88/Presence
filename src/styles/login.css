@@ -180,3 +180,8 @@
     padding: 16px 0;
   }
 }
+/* FIX: allow page scroll without changing design */
+.login-wrapper {
+  overflow-y: auto;
+  padding: 40px 0;
+}
