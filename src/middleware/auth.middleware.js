@@ -9,7 +9,8 @@ export const protect = async (req, res, next) => {
       return res.status(401).json({ message: "Not authorized" });
     }
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
+    const decoded = jwt.verify(token, process.env.JWT_SECRET); // 🔥 MATCH THIS
+
     const user = await User.findById(decoded.userId).select("-password");
 
     if (!user) {
