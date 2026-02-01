@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Peer from "simple-peer";
-import socket from "../socket"; // ✅ SINGLE SOCKET INSTANCE
+import socket from "../socket";
 
 const CallButton = ({ friendId, userId }) => {
   const navigate = useNavigate();
@@ -19,23 +19,18 @@ const CallButton = ({ friendId, userId }) => {
   const signalingDoneRef = useRef(false);
 
   useEffect(() => {
-    // 🎥 Get media
     navigator.mediaDevices
       .getUserMedia({ video: true, audio: true })
       .then((s) => {
         setStream(s);
-        if (myVideo.current) {
-          myVideo.current.srcObject = s;
-        }
+        if (myVideo.current) myVideo.current.srcObject = s;
       });
 
-    // ✅ Join socket room ONCE
     if (!joinedRef.current) {
       socket.emit("join", userId);
       joinedRef.current = true;
     }
 
-    // 📞 Incoming call
     socket.on("incomingCall", ({ from, signalData, callType }) => {
       if (callActiveRef.current) return;
       if (callType !== "video") return;
@@ -44,22 +39,15 @@ const CallButton = ({ friendId, userId }) => {
       setCallerSignal({ from, signalData });
     });
 
-    // ✅ Call accepted (initiator side)
     socket.on("callAccepted", ({ signalData }) => {
-      if (
-        !connectionRef.current ||
-        connectionRef.current.destroyed ||
-        signalingDoneRef.current
-      )
-        return;
+      if (!connectionRef.current || connectionRef.current.destroyed || signalingDoneRef.current) return;
 
       connectionRef.current.signal(signalData);
       signalingDoneRef.current = true;
     });
 
-    // ☎️ Call ended by peer
+    // ✅ Fixed: always clean up on call ended
     socket.on("callEnded", () => {
-      // ❌ Removed the guard: always cleanup
       cleanupCall();
       navigate("/home", { replace: true });
     });
@@ -74,32 +62,20 @@ const CallButton = ({ friendId, userId }) => {
     };
   }, [navigate, userId]);
 
-  // 📤 Call friend (initiator)
   const callUser = () => {
     if (!stream || callActiveRef.current) return;
 
     callActiveRef.current = true;
     signalingDoneRef.current = false;
 
-    const peer = new Peer({
-      initiator: true,
-      trickle: false,
-      stream,
-    });
+    const peer = new Peer({ initiator: true, trickle: false, stream });
 
     peer.on("signal", (data) => {
-      socket.emit("callUser", {
-        to: friendId,
-        from: userId,
-        signalData: data,
-        callType: "video",
-      });
+      socket.emit("callUser", { to: friendId, from: userId, signalData: data, callType: "video" });
     });
 
     peer.on("stream", (remote) => {
-      if (friendVideo.current) {
-        friendVideo.current.srcObject = remote;
-      }
+      if (friendVideo.current) friendVideo.current.srcObject = remote;
     });
 
     peer.on("close", cleanupCall);
@@ -108,53 +84,35 @@ const CallButton = ({ friendId, userId }) => {
     connectionRef.current = peer;
   };
 
-  // 📥 Answer call (receiver)
   const answerCall = () => {
     if (!callerSignal || callActiveRef.current) return;
 
     callActiveRef.current = true;
     setReceivingCall(false);
 
-    const peer = new Peer({
-      initiator: false,
-      trickle: false,
-      stream,
-    });
+    const peer = new Peer({ initiator: false, trickle: false, stream });
 
     peer.on("signal", (data) => {
-      socket.emit("acceptCall", {
-        to: callerSignal.from,
-        signalData: data,
-      });
+      socket.emit("acceptCall", { to: callerSignal.from, signalData: data });
     });
 
     peer.on("stream", (remote) => {
-      if (friendVideo.current) {
-        friendVideo.current.srcObject = remote;
-      }
+      if (friendVideo.current) friendVideo.current.srcObject = remote;
     });
 
     peer.on("close", cleanupCall);
     peer.on("error", cleanupCall);
 
-    // ❗ DO NOT mark signaling done here
     peer.signal(callerSignal.signalData);
-
     connectionRef.current = peer;
   };
 
-  // ❌ End call
   const endCall = () => {
-    socket.emit("endCall", {
-      to: callerSignal?.from || friendId,
-      from: userId,
-    });
-
+    socket.emit("endCall", { to: callerSignal?.from || friendId, from: userId });
     cleanupCall();
     navigate("/home", { replace: true });
   };
 
-  // 🧹 Cleanup (SAFE & FINAL)
   const cleanupCall = () => {
     callActiveRef.current = false;
     signalingDoneRef.current = false;
@@ -176,34 +134,17 @@ const CallButton = ({ friendId, userId }) => {
     setCallerSignal(null);
   };
 
-  // ⛔ JSX — 100% UNCHANGED
   return (
     <div style={{ width: "100%" }}>
       <div className="video-split">
-        <video
-          ref={myVideo}
-          autoPlay
-          playsInline
-          muted
-          className="full-screen-video"
-        />
-        <video
-          ref={friendVideo}
-          autoPlay
-          playsInline
-          className="full-screen-video"
-        />
+        <video ref={myVideo} autoPlay playsInline muted className="full-screen-video" />
+        <video ref={friendVideo} autoPlay playsInline className="full-screen-video" />
       </div>
 
       <div className="controls">
         <button onClick={callUser}>Call Friend</button>
         {receivingCall && <button onClick={answerCall}>Answer</button>}
-        <button
-          onClick={endCall}
-          style={{ background: "red", color: "#fff" }}
-        >
-          End Call
-        </button>
+        <button onClick={endCall} style={{ background: "red", color: "#fff" }}>End Call</button>
       </div>
     </div>
   );
