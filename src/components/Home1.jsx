@@ -7,7 +7,7 @@ import "../styles/home1.css";
 
 const Home1 = ({ user, setUser }) => {
   const [friends, setFriends] = useState([]);
-  const location = useLocation(); // ✅ useLocation hook
+  const location = useLocation(); // useLocation hook
   const selectedFriendId = location.state?.friendId;
 
   const fetchFriends = async () => {

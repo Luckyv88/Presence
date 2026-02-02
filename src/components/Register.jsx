@@ -32,10 +32,10 @@ const Register = () => {
     e.preventDefault();
     try {
       await api.post("/auth/signup", form);
-      setToast("✅ Registration Successful!");
+      setToast("Registration Successful!");
       setTimeout(() => navigate("/login"), 1200);
     } catch (err) {
-      setToast(err.response?.data?.message || "❌ Signup Failed!");
+      setToast(err.response?.data?.message || "Signup Failed!");
       console.error(err);
     }
   };

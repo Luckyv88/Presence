@@ -17,7 +17,7 @@ const CallButton = ({ friendId, userId }) => {
   const joinedRef = useRef(false);
   const callActiveRef = useRef(false);
   const signalingDoneRef = useRef(false);
-
+ 
   useEffect(() => {
       if (stream) {
     stream.getTracks().forEach(track => track.stop());
@@ -59,7 +59,7 @@ socket.on("incomingCall", (data) => {
 });
 
 
-    // ✅ Fixed: always clean up on call ended
+    //Fixed: always clean up on call ended
    socket.on("callEnded", () => {
   hardReset();
 });
@@ -97,7 +97,7 @@ socket.on("incomingCall", (data) => {
   };
 
 const answerCall = () => {
-  // ✅ Check that callerSignal exists and has signalData
+  // Check that callerSignal exists and has signalData
   if (!callerSignal || !callerSignal.signalData || callActiveRef.current) return;
 
   callActiveRef.current = true;
@@ -116,7 +116,7 @@ const answerCall = () => {
   peer.on("close", cleanupCall);
   peer.on("error", cleanupCall);
 
-  // ✅ Only call signal if signalData exists
+  // Only call signal if signalData exists
   peer.signal(callerSignal.signalData);
 
   connectionRef.current = peer;
@@ -129,7 +129,7 @@ const endCall = () => {
     from: userId,
   });
 
-  // 🔥 Update friend status to online after ending call
+  // Update friend status to online after ending call
   if (callerSignal?.from) {
     socket.emit("updateStatus", { userId: callerSignal.from, status: "online" });
   }
@@ -138,30 +138,30 @@ const endCall = () => {
 };
 
 const hardReset = () => {
-  // 🔥 DESTROY PEER
+  // DESTROY PEER
   if (connectionRef.current) {
     connectionRef.current.destroy();
     connectionRef.current = null;
   }
 
-  // 🔥 STOP MEDIA
+  // STOP MEDIA
   if (stream) {
     stream.getTracks().forEach(t => t.stop());
     setStream(null);
   }
 
-  // 🔥 CLEAR UI
+  // CLEAR UI
   if (myVideo.current) myVideo.current.srcObject = null;
   if (friendVideo.current) friendVideo.current.srcObject = null;
 
   setReceivingCall(false);
   setCallerSignal(null);
 
-  // 🔥 FORCE SOCKET RESET
+  // FORCE SOCKET RESET
   socket.off();
   socket.emit("join", userId);
 
-  // 🔥 GO HOME (OWN USER)
+  //  GO HOME (OWN USER)
   navigate("/home", { replace: true });
 };
 

@@ -13,7 +13,7 @@ const Login = ({ setUser }) => {
     e.preventDefault();
     setError("");
     try {
-      // ✅ FIXED PATH
+      // FIXED PATH
       const res = await api.post("/auth/login", { email, password });
       setUser(res.data.user);
       navigate("/home");

@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import Login from "./components/Login";
 import Register from "./components/Register";
-import Home from "./components/Home";       // ✅ Import the new Home page
-import Home1 from "./components/Home1";     // ✅ Existing call page
+import Home from "./components/Home";       // Import the new Home page
+import Home1 from "./components/Home1";     // Existing call page
 import FriendAdd from "./components/FriendAdd.jsx";
 import { api } from "./utils/api";
 
