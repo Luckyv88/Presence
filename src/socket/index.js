@@ -20,9 +20,17 @@ export const initSocket = (httpServer) => {
       console.log(`User ${userId} joined room`);
     });
 
-    socket.on("callUser", ({ to, signal, from }) => {
-      io.to(to).emit("incomingCall", { from, signal });
-    });
+socket.on("callUser", ({ to, signalData, from, callType }) => {
+  io.to(to).emit("incomingCall", {
+    from,
+    signalData,
+    callType
+  });
+});
+
+socket.on("acceptCall", ({ to, signalData }) => {
+  io.to(to).emit("callAccepted", { signalData });
+});
 
     socket.on("acceptCall", ({ to, signal }) => {
       io.to(to).emit("callAccepted", signal);
