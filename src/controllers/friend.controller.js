@@ -5,29 +5,29 @@ export const addFriend = async (req, res) => {
   const { username } = req.params;
 
   try {
-    // 1️⃣ Logged-in user
+    // Logged-in user
     const user = await User.findById(req.user._id);
     if (!user) return res.status(404).json({ message: "User not found" });
 
-    // 2️⃣ Prevent adding yourself
+    //  Prevent adding yourself
     if (user.username === username) {
       return res.status(400).json({ message: "You cannot add yourself" });
     }
 
-    // 3️⃣ Find friend by USERNAME (NOT ID)
+    //  Find friend by USERNAME (NOT ID)
     const friend = await User.findOne({ username });
     if (!friend) return res.status(404).json({ message: "User not found" });
 
-    // 4️⃣ Already friends check
+    //  Already friends check
     if (user.friends.includes(friend._id)) {
       return res.status(400).json({ message: "Already friends" });
     }
 
-    // 5️⃣ Add each other
+    //  Add each other
     user.friends.push(friend._id);
     friend.friends.push(user._id);
 
-    // 6️⃣ Save
+    //  Save
     await user.save();
     await friend.save();
 

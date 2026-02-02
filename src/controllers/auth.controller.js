@@ -9,7 +9,7 @@ export const signup = async (req, res) => {
   const { fullname, username, email, phone, password } = req.body;
 
   try {
-    // 1️⃣ Validate required fields
+    //  Validate required fields
     if (!fullname || !username || !email || !phone || !password) {
       return res.status(400).json({ message: "All fields are required" });
     }
@@ -25,13 +25,13 @@ export const signup = async (req, res) => {
       return res.status(400).json({ message: "Invalid email format" });
     }
 
-    // ✅ Validate phone number (must be 10 digits)
+    //  Validate phone number (must be 10 digits)
     const phoneRegex = /^\d{10}$/;
     if (!phoneRegex.test(phone)) {
       return res.status(400).json({ message: "Phone number must be 10 digits" });
     }
 
-    // 2️⃣ Check for existing user
+    // Check for existing user
     const userExists = await User.findOne({
       $or: [{ email }, { username }, { phone }],
     });
@@ -42,17 +42,17 @@ export const signup = async (req, res) => {
         .json({ message: "User already exists with given details" });
     }
 
-    // 3️⃣ Hash password
+    //  Hash password
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    // 4️⃣ Generate avatar using Multiavatar (SVG)
+    //  Generate avatar using Multiavatar (SVG)
     const avatarSvg = multiavatar(username);
     const avatarBase64 = `data:image/svg+xml;base64,${Buffer.from(
       avatarSvg
     ).toString("base64")}`;
 
-    // 5️⃣ Create user
+    // Create user
     const newUser = await User.create({
       fullname,
       username,
@@ -62,7 +62,7 @@ export const signup = async (req, res) => {
       profilepic: avatarBase64,
     });
 
-    // 6️⃣ Sync user with Stream (non-blocking)
+    // Sync user with Stream (non-blocking)
     try {
       await upsertStreamUser({
         id: newUser._id.toString(),
@@ -74,23 +74,23 @@ export const signup = async (req, res) => {
       console.error("Stream sync failed:", err.message);
     }
 
-    // 7️⃣ Generate JWT
+    //  Generate JWT
     const token = jwt.sign(
       { userId: newUser._id },
       process.env.JWT_SECRET_KEY,
       { expiresIn: "7d" }
     );
 
-    // 8️⃣ Secure cookie
+    //  Secure cookie
    res.cookie("jwt", token, {
   httpOnly: true,
-  sameSite: "none",        // ✅ allow cross-origin
-  secure: true,            // ✅ required for HTTPS
+  sameSite: "none",        // allow cross-origin
+  secure: true,            // required for HTTPS
   maxAge: 7 * 24 * 60 * 60 * 1000,
 });
 
 
-    // 9️⃣ Response (never return password)
+    //Response (never return password)
     res.status(201).json({
       success: true,
       user: {
@@ -123,7 +123,7 @@ export const login = async (req, res) => {
 
     const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET_KEY, { expiresIn: "7d" });
 
-    // ✅ consistent cookie
+    // consistent cookie
     res.cookie("jwt", token, {
       httpOnly: true,
       sameSite: "none",  // allow cross-origin
