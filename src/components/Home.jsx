@@ -2,12 +2,12 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "../utils/api";
 import Navbar from "./Navbar";
-import socket from "../socket"; // 🔥 added
+import socket from "../socket";
 import "../styles/home1.css";
 
 const Home = ({ user, setUser }) => {
   const [friends, setFriends] = useState([]);
-  const [friendStatus, setFriendStatus] = useState({}); // 🔥 friend statuses
+  const [friendStatus, setFriendStatus] = useState({});
   const navigate = useNavigate();
 
   const fetchFriends = async () => {
@@ -22,7 +22,6 @@ const Home = ({ user, setUser }) => {
   useEffect(() => {
     fetchFriends();
 
-    // 🔥 Listen for friend status updates
     socket.on("updateStatus", ({ userId, status }) => {
       setFriendStatus((prev) => ({ ...prev, [userId]: status }));
     });
@@ -61,19 +60,23 @@ const Home = ({ user, setUser }) => {
                   />
                   <p className="friend-name">{friend.fullname}</p>
 
-                  {/* 🔥 Status Indicator */}
+                  {/* Status dot and inline-styled text */}
                   <span
                     className="friend-status"
-                    style={{
-                      width: "10px",
-                      height: "10px",
-                      borderRadius: "50%",
-                      display: "inline-block",
-                      marginRight: "5px",
-                      backgroundColor: statusColor,
-                    }}
+                    style={{ backgroundColor: statusColor }}
                     title={status}
                   ></span>
+                  <span
+                    style={{
+                      marginRight: "10px",
+                      fontSize: "0.9rem",
+                      color: "#555",
+                      fontWeight: "500",
+                      verticalAlign: "middle",
+                    }}
+                  >
+                    {status}
+                  </span>
 
                   <button
                     onClick={() => handleVideoCall(friend._id)}
