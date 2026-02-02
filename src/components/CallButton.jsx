@@ -129,6 +129,11 @@ const endCall = () => {
     from: userId,
   });
 
+  // 🔥 Update friend status to online after ending call
+  if (callerSignal?.from) {
+    socket.emit("updateStatus", { userId: callerSignal.from, status: "online" });
+  }
+
   hardReset();
 };
 
