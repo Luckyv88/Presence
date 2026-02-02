@@ -19,6 +19,10 @@ const CallButton = ({ friendId, userId }) => {
   const signalingDoneRef = useRef(false);
 
   useEffect(() => {
+      if (stream) {
+    stream.getTracks().forEach(track => track.stop());
+    setStream(null);
+  }
     navigator.mediaDevices
       .getUserMedia({ video: true, audio: true })
       .then((s) => {
@@ -31,20 +35,29 @@ const CallButton = ({ friendId, userId }) => {
       joinedRef.current = true;
     }
 
-    socket.on("incomingCall", ({ from, signalData, callType }) => {
-      if (callActiveRef.current) return;
-      if (callType !== "video") return;
+socket.on("incomingCall", (data) => {
+  if (!data) return; 
 
-      setReceivingCall(true);
-      setCallerSignal({ from, signalData });
-    });
+  const { from, signalData, callType } = data || {};
 
-    socket.on("callAccepted", ({ signalData }) => {
-      if (!connectionRef.current || connectionRef.current.destroyed || signalingDoneRef.current) return;
+  if (!from || !signalData || callType !== "video") return;
 
-      connectionRef.current.signal(signalData);
-      signalingDoneRef.current = true;
-    });
+  if (callActiveRef.current) return;
+
+  setReceivingCall(true);
+  setCallerSignal({ from, signalData });
+});
+
+
+
+   socket.on("callAccepted", (data) => {
+  if (!data || !data.signalData) return;
+  if (!connectionRef.current || connectionRef.current.destroyed || signalingDoneRef.current) return;
+
+  connectionRef.current.signal(data.signalData);
+  signalingDoneRef.current = true;
+});
+
 
     // ✅ Fixed: always clean up on call ended
    socket.on("callEnded", () => {
@@ -83,28 +96,32 @@ const CallButton = ({ friendId, userId }) => {
     connectionRef.current = peer;
   };
 
-  const answerCall = () => {
-    if (!callerSignal || callActiveRef.current) return;
+const answerCall = () => {
+  // ✅ Check that callerSignal exists and has signalData
+  if (!callerSignal || !callerSignal.signalData || callActiveRef.current) return;
 
-    callActiveRef.current = true;
-    setReceivingCall(false);
+  callActiveRef.current = true;
+  setReceivingCall(false);
 
-    const peer = new Peer({ initiator: false, trickle: false, stream });
+  const peer = new Peer({ initiator: false, trickle: false, stream });
 
-    peer.on("signal", (data) => {
-      socket.emit("acceptCall", { to: callerSignal.from, signalData: data });
-    });
+  peer.on("signal", (data) => {
+    socket.emit("acceptCall", { to: callerSignal.from, signalData: data });
+  });
 
-    peer.on("stream", (remote) => {
-      if (friendVideo.current) friendVideo.current.srcObject = remote;
-    });
+  peer.on("stream", (remote) => {
+    if (friendVideo.current) friendVideo.current.srcObject = remote;
+  });
 
-    peer.on("close", cleanupCall);
-    peer.on("error", cleanupCall);
+  peer.on("close", cleanupCall);
+  peer.on("error", cleanupCall);
 
-    peer.signal(callerSignal.signalData);
-    connectionRef.current = peer;
-  };
+  // ✅ Only call signal if signalData exists
+  peer.signal(callerSignal.signalData);
+
+  connectionRef.current = peer;
+};
+
 
 const endCall = () => {
   socket.emit("endCall", {
