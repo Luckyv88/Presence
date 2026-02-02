@@ -21,8 +21,8 @@ const app = express();
 
 // Middlewares
 app.use(cors({
-//  origin: 'https://presences-5a8n.onrender.com',
-  origin: 'http://localhost:3000', 
+    origin: 'https://presences-5a8n.onrender.com',
+ 
   // your frontend URL
   credentials: true,               // allow cookies
 }));
