@@ -38,56 +38,111 @@ const Home = ({ user, setUser }) => {
   return (
     <>
       <Navbar user={user} setUser={setUser} />
-      <div className="container">
+
+      <div
+        className="container"
+        style={{
+          maxHeight: "calc(100vh - 80px)", // scrollable below navbar
+          overflowY: "auto",
+          padding: "10px",
+          display: "flex",
+          flexWrap: "wrap",
+          gap: "10px",
+          justifyContent: "center",
+        }}
+      >
         {friends.length === 0 ? (
           <p style={{ color: "#aaa", textAlign: "center", marginTop: "20px" }}>
             No friends found
           </p>
         ) : (
-          <div className="friend-list">
-            {friends.map((friend) => {
-              const status = friendStatus[friend._id] || "offline";
-              let statusColor = "gray";
-              if (status === "online") statusColor = "green";
-              else if (status === "ringing") statusColor = "orange";
+          friends.map((friend) => {
+            const status = friendStatus[friend._id] || "offline";
+            let statusColor = "gray";
+            if (status === "online") statusColor = "green";
+            else if (status === "ringing") statusColor = "orange";
 
-              return (
-                <div key={friend._id} className="friend-card">
-                  <img
-                    src={friend.profilepic || "/default-avatar.png"}
-                    alt={friend.fullname}
-                    className="friend-avatar"
-                  />
-                  <p className="friend-name">{friend.fullname}</p>
+            return (
+              <div
+                key={friend._id}
+                className="friend-card"
+                style={{
+                  flex: "0 0 150px", // minimized card width
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  padding: "10px",
+                  borderRadius: "8px",
+                  background: "#f9f9f9",
+                  boxShadow: "0 1px 4px rgba(0,0,0,0.1)",
+                  marginBottom: "8px",
+                }}
+              >
+                <img
+                  src={friend.profilepic || "/default-avatar.png"}
+                  alt={friend.fullname}
+                  className="friend-avatar"
+                  style={{
+                    width: "50px",
+                    height: "50px",
+                    borderRadius: "50%",
+                    marginBottom: "6px",
+                  }}
+                />
+                <p
+                  className="friend-name"
+                  style={{
+                    fontWeight: "600",
+                    fontSize: "0.9rem",
+                    marginBottom: "5px",
+                    textAlign: "center",
+                  }}
+                >
+                  {friend.fullname}
+                </p>
 
-                  {/* Status dot and inline-styled text */}
-                  <span
-                    className="friend-status"
-                    style={{ backgroundColor: statusColor }}
-                    title={status}
-                  ></span>
-                  <span
-                    style={{
-                      marginRight: "10px",
-                      fontSize: "0.9rem",
-                      color: "#555",
-                      fontWeight: "500",
-                      verticalAlign: "middle",
-                    }}
-                  >
-                    {status}
-                  </span>
+                <span
+                  className="friend-status"
+                  style={{
+                    backgroundColor: statusColor,
+                    width: "10px",
+                    height: "10px",
+                    borderRadius: "50%",
+                    display: "inline-block",
+                    marginRight: "4px",
+                  }}
+                  title={status}
+                ></span>
+                <span
+                  style={{
+                    marginBottom: "6px",
+                    fontSize: "0.8rem",
+                    color: "#555",
+                    fontWeight: "500",
+                  }}
+                >
+                  {status}
+                </span>
 
-                  <button
-                    onClick={() => handleVideoCall(friend._id)}
-                    className="video-call-btn"
-                  >
-                    Video Call
-                  </button>
-                </div>
-              );
-            })}
-          </div>
+                <button
+                  onClick={() => handleVideoCall(friend._id)}
+                  className="video-call-btn"
+                  style={{
+                    padding: "5px 8px",
+                    borderRadius: "5px",
+                    border: "none",
+                    background: "#4caf50",
+                    color: "#fff",
+                    cursor: "pointer",
+                    fontSize: "0.8rem",
+                    fontWeight: "600",
+                  }}
+                >
+                  Video Call
+                </button>
+              </div>
+            );
+          })
         )}
       </div>
     </>
