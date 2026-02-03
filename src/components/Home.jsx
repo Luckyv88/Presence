@@ -37,108 +37,108 @@ const Home = ({ user, setUser }) => {
 
   return (
     <>
+      {/* 1. Navbar stays fixed as per your code */}
       <Navbar user={user} setUser={setUser} />
 
-      {/* Scrollable middle section */}
-      <div
-  style={{
-    height: "calc(100vh - 80px)", // full height minus navbar
-    overflowY: "auto",
-    padding: "20px",
-    display: "grid",
-    gridTemplateColumns: "repeat(4, 1fr)", // 4 cards per row
-    gap: "20px",
-    justifyItems: "center", // center each card horizontally
-    alignContent: "start",  // start from top but stays centered vertically when few users
-  }}
->
-        {friends.length === 0 ? (
-          <p style={{ color: "#aaa", textAlign: "center", marginTop: "20px" }}>
-            No friends found
-          </p>
-        ) : (
-          friends.map((friend) => {
-            const status = friendStatus[friend._id] || "offline";
-            let statusColor = "gray";
-            if (status === "online") statusColor = "green";
-            else if (status === "ringing") statusColor = "orange";
+      {/* 2. Main Container starts AFTER the navbars using your CSS .container class */}
+      <div className="container" style={{ 
+        overflowY: "auto", 
+        padding: "40px", 
+        background: "transparent",
+        height: "calc(100vh - 70px)" // Ensures the middle part fills the screen height
+      }}>
+        
+        {/* 3. Grid layout for Friend Cards */}
+        <div style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
+          gap: "30px",
+          width: "100%",
+          justifyItems: "center"
+        }}>
+          {friends.length === 0 ? (
+            <p style={{ color: "var(--text-muted)", textAlign: "center", gridColumn: "1/-1", marginTop: "50px" }}>
+              No friends found
+            </p>
+          ) : (
+            friends.map((friend) => {
+              // Status logic
+              const status = friendStatus[friend._id] || "offline";
+              let statusColor = "#888"; 
+              if (status === "online") statusColor = "#00ffa3"; 
+              else if (status === "ringing") statusColor = "#ff4ad9"; 
 
-            return (
-              <div
-                key={friend._id}
-                style={{
-                  flex: "0 0 180px", // minimized width
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  padding: "10px",
-                  borderRadius: "8px",
-                  background: "#f9f9f9",
-                  boxShadow: "0 1px 4px rgba(0,0,0,0.1)",
-                }}
-              >
-                <img
-                  src={friend.profilepic || "/default-avatar.png"}
-                  alt={friend.fullname}
+              return (
+                <div
+                  key={friend._id}
                   style={{
-                    width: "60px",
-                    height: "60px",
-                    borderRadius: "50%",
-                    marginBottom: "8px",
-                  }}
-                />
-                <p
-                  style={{
-                    fontWeight: "600",
-                    fontSize: "0.9rem",
-                    marginBottom: "6px",
-                    textAlign: "center",
+                    width: "200px",
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    padding: "20px",
+                    borderRadius: "20px",
+                    background: "var(--card-bg)", // Glassy theme from your CSS
+                    backdropFilter: "blur(12px)",
+                    border: "1px solid var(--border-color)",
+                    boxShadow: "0 10px 30px rgba(0,0,0,0.3)",
+                    transition: "var(--transition)"
                   }}
                 >
-                  {friend.fullname}
-                </p>
+                  {/* User Profile Image */}
+                  <img
+                    src={friend.profilepic || "/default-avatar.png"}
+                    alt={friend.fullname}
+                    style={{
+                      width: "80px",
+                      height: "80px",
+                      borderRadius: "50%",
+                      marginBottom: "12px",
+                      border: `2px solid ${statusColor}`,
+                      padding: "3px",
+                      objectFit: "cover"
+                    }}
+                  />
 
-                <span
-                  style={{
-                    backgroundColor: statusColor,
-                    width: "10px",
-                    height: "10px",
-                    borderRadius: "50%",
-                    display: "inline-block",
-                    marginBottom: "4px",
-                  }}
-                  title={status}
-                ></span>
-                <span
-                  style={{
-                    fontSize: "0.8rem",
-                    color: "#555",
-                    fontWeight: "500",
-                    marginBottom: "8px",
-                  }}
-                >
-                  {status}
-                </span>
+                  {/* Name and Status */}
+                  <p style={{ fontWeight: "600", color: "var(--text-main)", marginBottom: "4px" }}>
+                    {friend.fullname}
+                  </p>
 
-                <button
-                  onClick={() => handleVideoCall(friend._id)}
-                  style={{
-                    padding: "5px 10px",
-                    borderRadius: "5px",
-                    border: "none",
-                    background: "#4caf50",
-                    color: "#fff",
-                    cursor: "pointer",
-                    fontSize: "0.8rem",
-                    fontWeight: "600",
-                  }}
-                >
-                  Video Call
-                </button>
-              </div>
-            );
-          })
-        )}
+                  <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "15px" }}>
+                    <span style={{ 
+                      backgroundColor: statusColor, 
+                      width: "10px", 
+                      height: "10px", 
+                      borderRadius: "50%",
+                      boxShadow: status === "online" ? `0 0 10px ${statusColor}` : "none" 
+                    }}></span>
+                    <span style={{ fontSize: "0.8rem", color: "var(--text-muted)" }}>{status}</span>
+                  </div>
+
+                  {/* Action Button */}
+                  <button
+                    onClick={() => handleVideoCall(friend._id)}
+                    style={{
+                      width: "100%",
+                      padding: "10px",
+                      borderRadius: "12px",
+                      background: status === "online" ? "var(--primary-gradient)" : "rgba(255,255,255,0.05)",
+                      color: status === "online" ? "#0c0f25" : "#777",
+                      cursor: status === "online" ? "pointer" : "not-allowed",
+                      border: "none",
+                      fontWeight: "bold",
+                      transition: "var(--transition)"
+                    }}
+                    disabled={status !== "online"}
+                  >
+                    Video Call
+                  </button>
+                </div>
+              );
+            })
+          )}
+        </div>
       </div>
     </>
   );
