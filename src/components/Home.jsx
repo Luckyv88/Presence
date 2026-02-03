@@ -41,17 +41,17 @@ const Home = ({ user, setUser }) => {
 
       {/* Scrollable middle section */}
       <div
-        style={{
-          maxHeight: "calc(100vh - 80px)", // 100% viewport minus navbar
-          overflowY: "auto",
-          padding: "10px",
-          display: "flex",
-          flexWrap: "wrap",
-          gap: "10px",
-          justifyContent: "center",
-          alignItems: "flex-start", // top alignment
-        }}
-      >
+  style={{
+    height: "calc(100vh - 80px)", // full height minus navbar
+    overflowY: "auto",
+    padding: "20px",
+    display: "grid",
+    gridTemplateColumns: "repeat(4, 1fr)", // 4 cards per row
+    gap: "20px",
+    justifyItems: "center", // center each card horizontally
+    alignContent: "start",  // start from top but stays centered vertically when few users
+  }}
+>
         {friends.length === 0 ? (
           <p style={{ color: "#aaa", textAlign: "center", marginTop: "20px" }}>
             No friends found
