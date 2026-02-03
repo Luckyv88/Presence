@@ -39,16 +39,17 @@ const Home = ({ user, setUser }) => {
     <>
       <Navbar user={user} setUser={setUser} />
 
+      {/* Scrollable middle section */}
       <div
-        className="container"
         style={{
-          maxHeight: "calc(100vh - 80px)", // scrollable below navbar
+          maxHeight: "calc(100vh - 80px)", // 100% viewport minus navbar
           overflowY: "auto",
           padding: "10px",
           display: "flex",
           flexWrap: "wrap",
           gap: "10px",
           justifyContent: "center",
+          alignItems: "flex-start", // top alignment
         }}
       >
         {friends.length === 0 ? (
@@ -65,9 +66,8 @@ const Home = ({ user, setUser }) => {
             return (
               <div
                 key={friend._id}
-                className="friend-card"
                 style={{
-                  flex: "0 0 150px", // minimized card width
+                  flex: "0 0 180px", // minimized width
                   display: "flex",
                   flexDirection: "column",
                   alignItems: "center",
@@ -75,26 +75,23 @@ const Home = ({ user, setUser }) => {
                   borderRadius: "8px",
                   background: "#f9f9f9",
                   boxShadow: "0 1px 4px rgba(0,0,0,0.1)",
-                  marginBottom: "8px",
                 }}
               >
                 <img
                   src={friend.profilepic || "/default-avatar.png"}
                   alt={friend.fullname}
-                  className="friend-avatar"
                   style={{
-                    width: "50px",
-                    height: "50px",
+                    width: "60px",
+                    height: "60px",
                     borderRadius: "50%",
-                    marginBottom: "6px",
+                    marginBottom: "8px",
                   }}
                 />
                 <p
-                  className="friend-name"
                   style={{
                     fontWeight: "600",
                     fontSize: "0.9rem",
-                    marginBottom: "5px",
+                    marginBottom: "6px",
                     textAlign: "center",
                   }}
                 >
@@ -102,23 +99,22 @@ const Home = ({ user, setUser }) => {
                 </p>
 
                 <span
-                  className="friend-status"
                   style={{
                     backgroundColor: statusColor,
                     width: "10px",
                     height: "10px",
                     borderRadius: "50%",
                     display: "inline-block",
-                    marginRight: "4px",
+                    marginBottom: "4px",
                   }}
                   title={status}
                 ></span>
                 <span
                   style={{
-                    marginBottom: "6px",
                     fontSize: "0.8rem",
                     color: "#555",
                     fontWeight: "500",
+                    marginBottom: "8px",
                   }}
                 >
                   {status}
@@ -126,9 +122,8 @@ const Home = ({ user, setUser }) => {
 
                 <button
                   onClick={() => handleVideoCall(friend._id)}
-                  className="video-call-btn"
                   style={{
-                    padding: "5px 8px",
+                    padding: "5px 10px",
                     borderRadius: "5px",
                     border: "none",
                     background: "#4caf50",
