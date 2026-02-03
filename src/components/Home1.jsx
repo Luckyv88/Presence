@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom"; // ✅ Add this
+import { useLocation } from "react-router-dom"; // Add this
 import { api } from "../utils/api";
 import Navbar from "./Navbar";
 import CallButton from "./CallButton";

@@ -16,7 +16,7 @@ const Navbar = ({ user, setUser }) => {
     <>
       {/* Horizontal Navbar */}
       <div className="navbar-horizontal">
-        <h2>Presene</h2>
+        <h2>Presence</h2>
         {user && (
           <button onClick={handleLogout}>
             Logout
