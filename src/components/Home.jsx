@@ -61,6 +61,7 @@ const Home = ({ user, setUser }) => {
               gap: "30px", // SPECIFIC GAP BETWEEN CARDS
               justifyItems: "center",
               alignItems: "start",
+               paddingTop: "220px",
             }}
           >
             {friends.map((friend) => {
